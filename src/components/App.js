@@ -1,23 +1,16 @@
 import React, { Component } from 'react';
-import Task from './Task'
+import { connect } from 'react-redux';
+import Task from './Task';
 import './App.css';
 
 class App extends Component {
-    constructor() {
-        super();
-        this.state = {toDoList: []};
-    }
-    
     componentDidMount() {
-        fetch("toDoList.json").then(resp => {
-            resp.json().then(data => {
-                this.setState({toDoList: data.tasks});
-            });
-        });
+        this.props.dispatch({type: "GET_TO_DO_LIST"});
     }
     
     render() {
-        let toDoList = this.state.toDoList.map((item, index) => {
+        console.log(this.props);
+        let toDoList = this.props.toDoList.map((item, index) => {
             return <Task key={index} task={item.task}></Task>;
         });
         
@@ -30,4 +23,12 @@ class App extends Component {
     }
 }
 
-export default App;
+const convertStateToProps = (state) => {
+    return {toDoList: state.toDoList};
+}
+
+const convertDispatchToProps = (dispatch) => {
+    return {dispatch};
+}
+
+export default connect(convertDispatchToProps, convertStateToProps)(App);
